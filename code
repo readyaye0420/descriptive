@@ -1,0 +1,612 @@
+%let PROGNAME = drvd_masterds;
+
+proc printto log = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..log" new;    
+run;
+
+/*--------------------------------------------------------------------------------------------*
+*- EMD29696: MCC Chart review study     			         -*
+*---------------------------------------------------------------------------------------------*
+*- Purpose:Create operational variable-*
+*---------------------------------------------------------------------------------------------*  
+*-          Input dataset : rawdata.mcc_crf  -*
+*---------------------------------------------------------------------------------------------*
+*- Date:    May 10, 2021                                                                     -*
+*- Title:   drvd_master.sas                                                      -*
+*- Author:  Hongye Wei                                                                      -*
+*---------------------------------------------------------------------------------------------*
+*- Modified:                                                                                 -*
+*---------------------------------------------------------------------------------------------*
+/* Pull in project-wide parameters */
+/* %include "../common.sas";*/ 
+
+options nocenter mprint linesize=max pagesize=max; 
+
+title1 'QA/QC Listings';
+
+proc printto print = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..lst" new;    
+run;
+
+libname rawdata '/datalibrary/dua-data/EMD29696';
+libname projdata '/projects/dua-data-projects/EMD29696/global.nonperson/data';
+/*%let INDATA2 = rawdata.mcc_spf;*/
+/*proc contents data= &indata2;run;*/
+%let INDATA1 = rawdata.mcc_crf;
+%let OUTDATA = projdata.mcc_crf_drvd;
+
+
+title "QC &indata1 ";
+proc contents data= &indata1;run;
+      	                                                                                   
+
+/* create new viriable*/	                                                  
+	
+data &outdata;
+set &indata1 (encoding=asciiany);
+  
+    Age_CRF_q1	         =	Q1_r1_c1	;
+    Sex_CRF_q2	         =	Q2_r1	;
+    Race_CRF_q3          =	Q3	;
+    RaceOth_CRF_q3	     =	Q3_6_other	;
+    Ethnicity_CRF_q4	 =	Q4	;                  
+    Height_CRF_q5	     =	Q5	;
+    HeightUnit_CRF_q5	 =	Q5b	;
+    Weight_CRF_q6	     =	Q6	;
+    WeightUnit_CRF_q6	 =	Q6b	;
+ 
+    if  Q7_1=1 then insurance_crf_q7=1; 
+     else if   Q7_2=1 then insurance_crf_q7=2;
+     else if   Q7_3=1 then insurance_crf_q7=3;
+     else if   Q7_4=1 then insurance_crf_q7=4; 
+     else if   Q7_5=1 then insurance_crf_q7=5;
+     else if   Q7_6=1 then insurance_crf_q7=6;  
+     else      insurance_crf_q7=9;
+     
+    if  Q8_1=1 then insurance_crf_q8=1; 
+     else if   Q8_2=1 then insurance_crf_q8=2;
+     else if   Q8_3=1 then insurance_crf_q8=3;
+     else if   Q8_4=1 then insurance_crf_q8=4; 
+     else if   Q8_5=1 then insurance_crf_q8=5;
+     else if   Q8_6=1 then insurance_crf_q8=6; 
+     else      insurance_crf_q8=9;  
+     
+    comorbidity_crf_q9	                =	Q9b_r1_c1	;
+    solid_tumor_crf_q9	                =	Q9b_r2_c1	;
+    autoimmue_crf_q9	                =	Q9b_r3_c1	;
+    Cerebrovascular_crf_q9	            =	Q9b_r4_c1	;
+    Chronic_pulmonary_crf_q9	        =	Q9b_r5_c1	;
+    Congestive_heart_failure_crf_q9   	=	Q9b_r6_c1	;
+    Connective_tissue_disease_crf_q9	=	Q9b_r7_c1	;
+    Coronary_artery_crf_q9	            =	Q9b_r8_c1	; 
+    dementia_crf_q9	                    =	Q9b_r9_c1	;
+    Diab_with_endorgandamage_crf_q9 =	Q9b_r10_c1	;
+    Diab_with_no_compli_crf_q9	=	Q9b_r11_c1	;
+    Hemiplegia_paraplegia_crf_q9	    =	Q9b_r12_c1	;
+    Hepatitis_crf_q9	                =	Q9b_r13_c1	;
+    leukemia_crf_q9	                    =	Q9b_r14_c1	;
+    lymphoma_crf_q9	                    =	Q9b_r15_c1	;
+    Mild_liver_crf_q9	                =	Q9b_r16_c1	; 
+    Moderate_liver_crf_q9	            =	Q9b_r17_c1	;
+    Moderate_renal_crf_q9	            =	Q9b_r18_c1	;
+    Peptic_ulcer_crf_q9	                =	Q9b_r19_c1	;
+    Peripheral_vascular_crf_q9	        =	Q9b_r20_c1	;
+    Other_Other_crf_q13	                =	Q9b_r21_c1	;
+    
+    Stage_crf_q13	                    =	Q13b2 ;
+	face_crf_q13	                    =   Q13c_1 ;
+	Lower_limb_or_trunk_crf_q13         =	Q13c_2 ;
+	Scalp_and_neck_crf_q13	            =   Q13c_3 ;
+	limb_crf_q13	                    =   Q13c_4 ;
+	primary_crf_q13	                    =   Q13c_5 ;
+	No_documentation_crf_q13	        =   Q13c_6 ;
+    MCC_other_crf_q13	                =	Q13c_7	;
+    MCC_other_specify_crf_q13       	=	Q13c_7_other	;
+                 
+    Lymph_crf_q13	        =	Q13d_1 ;
+    Distant_skin_crf_q13	=	Q13d_2 ;
+    lung_crf_q13	        =	Q13d_3 ;
+    bone_crf_q13	        =	Q13d_4 ;
+    liver_crf_q13	        =	Q13d_5 ;
+    brain_crf_q13	        =	Q13d_6 ;
+    Sites_metastases_other_crf_q13	=	Q13d_7 ;
+    Sites_metastases_crf_q13	=	Q13d_7_other ;
+    
+    MCPyV_status_crf_q13	=	Q13g3	;
+    PD_status_crf_q13	    =	Q13h3	;
+    CD_Density_crf_q13	    =	Q13i3	;
+    
+    
+    surgical_crf_q14	          =	Q14	;
+    Wide_local_incision_crf_q14	  =	Q14b_r1_c3	;
+    Lymph_node_dissection_crf_q14 =	Q14b_r2_c3	;
+    Sentinel_lymph_node_crf_q14	  =	Q14b_r3_c3	;
+    mohs_micrographic_crf_q14	  =	Q14b_r4_c3	;
+    Other_Date_crf_q14	          =	Q14b_r5_c3	;
+    
+    Disease_avelumab_crf_q14	=	Q16d1_r1	;
+    Avelumab_mg_crf_q16	        =	Q16e1_r1_c2	;
+    Avelumab_mgkg_crf_q16	    =	Q16e1_r1_c3	;
+    Avelumab_mgm2_crf_q16	    =	Q16e1_r1_c4	;
+    Avelumab_Dose_other_crf_q16	=	Q16e1_r1_c5	;
+    Avelumab_dose_spec_crf_q16	=	Q16e1_r1_c6	;
+                 
+    Avelumab_freq_qw_crf_q16	=	Q16e2_r1_c3 ;
+    Avelumab_freq_q2w_crf_q16	=	Q16e2_r1_c4 ;
+    Avelumab_freq_q3w_crf_q16	=	Q16e2_r1_c5 ;
+    Avelumab_Other_crf_q16	        =	Q16e2_r1_c7 ;
+    
+    Avelumab_delayed_crf_q16	    =	Q16e3_r1_c2	;
+    other_treatment_crf_q16	        =	Q16f1_r1_c2	;	
+    other_treatment_iv_crf_q16	    =	Q16f2_r1_c2	;
+    other_treatment_oral_crf_q16	=	Q16f2_r1_c3	;
+    other_treatment_other_crf_q16	=	Q16f2_r1_c4	;
+    other_treatment_specify_crf_q16	=	Q16f2_r1_c5	;	
+
+    Systemic_Freq_qd_crf_q16	=	Q16f4_r1_c1	;
+    Systemic_Freq_bid_crf_q16	=	Q16f4_r1_c2	;
+    Systemic_Freq_qw_crf_q16	=	Q16f4_r1_c3	;
+    Systemic_Freq_q2w_crf_q16	=	Q16f4_r1_c4	;
+    Systemic_freq_q3w_crf_q16	=	Q16f4_r1_c5	;
+   Systemic_freq_other_crf_q16	=	Q16f4_r1_c6	;
+   Systemic_Freq_spec_crf_q16	=	Q16f4_r1_c7	;
+        Systemic_delayed_crf_q16	=	Q16f5_r1_c2	;
+       Number_doses_plan_crf_q16	=	Q16g1_r1_c1	;
+    Number_doses_complete_crf_q16	=	Q16g2_r1_c1	;
+   avelumab_discontinued_crf_q16	=	Q16k1	;
+
+    code1_crf_q16	=	Q16k2_r1_c1	;
+    code2_crf_q16	=	Q16k2_r1_c2	;
+    code3_crf_q16	=	Q16k2_r1_c3	;
+    code4_crf_q16	=	Q16k2_r1_c4	;
+
+
+   early_stage_mcc_crf_q10	=	Q10	;
+   
+   initial_mcc_month_crf_q10	=	Q10a_r1_c1	;
+   initial_mcc_day_crf_q10	=	Q10a_r1_c2	;
+   initial_mcc_year_crf_q10	=	Q10a_r1_c3	;
+   advanced_mcc_month_crf_q13	=	Q13a_r1_c1	;
+  advanced_mcc_day_crf_q13	=	Q13a_r1_c2	;
+  advanced_mcc_year_crf_q13	=	Q13a_r1_c3	;
+     reason_avelumab_crf_q16	=	Q16a_r1_c2	;
+             
+             
+        diagnosis_location_face_crf_q10	    =	Q10c_1	;
+        diagnosis_location_trunk_crf_q10	=	Q10c_2	;
+        diagnosis_location_neck_crf_q10   	=	Q10c_3	;
+        diagnosis_upperlimb_crf_q10	=	Q10c_4	;
+        diagnosis_Unknown_crf_q10	        =	Q10c_5	;
+        diagnosis_No_crf_q10	            =	Q10c_6	;
+        diagnosis_other_crf_q10	            =	Q10c_7	;
+        diagnosis_specify_crf_q10	        =	Q10c_7_other ;
+        
+        surgical_crf_q14	                =	Q14	;
+        Wide_local_incision_crf_q14	        =	Q14b_r1_c3	;
+        Lymph_node_dissection_crf_q14	    =	Q14b_r2_c3	;
+        Sentinel_lymph_node_crf_q14	        =	Q14b_r3_c3	;
+        mohs_micrographic_crf_q14	        =	Q14b_r4_c3	;
+        Other_Date_crf_q14	                =	Q14b_r5_c3	;
+        
+        adjuvant_crf_q12	                =	Q12	;
+        chemotherapy_crf_q12	            =	Q12A1_1	;
+        immuno_crf_q12	            =	Q12A1_2	;
+        radiation_crf_q12	                =	Q12A1_3	;
+        otheradjuvant_crf_q12	            =	Q12A1_4	;
+        other_adjuvant_crf_q12	            =	Q12A1_4_other	; 
+        
+         chemotherapy_response_crf_q12	    =	Q12A6	;
+         immuno_response_crf_q12	    =	Q12B6	;
+         chemotherapy_recur_crf_q12	        =	Q12A8	;
+         immuno_recur_crf_q12	    =	Q12B8	;
+         radiation_recur_crf_q12	        =	Q12C8	;
+         reur_other_crf_q12             	=	Q12D8	;
+         
+         chemotherapy_cycle_crf_q12	        =	Q12A4	;
+         immuno_cycle_crf_q12	    =	Q12B4	;
+         radiation_cycle_crf_q12	        =	Q12C4	;
+         cycle_other_crf_q12	            =	Q12D4	;
+         chemotherapy_duration_crf_q12	    =	Q12A5	;
+         immuno_duration_crf_q12	    =	Q12B5	;
+         radiation_duration_crf_q12	        =	Q12C5	;
+         duration_other_crf_q12	            =	Q12D5	;
+         chemotherapy_duration_crf_q12    	=	Q12A10	;
+         immuno_duration_crf_q12	    =	Q12B10	;
+         radiation_duration_crf_q12	        =	Q12C10	;
+         duration_other_crf_q12	            =	Q12D10	;
+         
+         neoadjuvant_crf_q11	            =	Q11	;
+         neoadjuvant_list_crf_q11	        =	Q11A1_4_other	;
+         chemotherapy_crf_q11	            =	Q11A6	;
+         immuno_crf_q11	            =	Q11B6	;
+         chemotherapy_recur_crf_q11	        =	Q11A8	;
+         immuno_recur_crf_q11	    =	Q11B8	;
+         radiation_recur_crf_q11	        =	Q11C8	;
+         reur_other_crf_q11	                =	Q11D8	;
+         chemotherapy_cycle_crf_q11	        =	Q11A4	;
+         immuno_cycle_crf_q11	    =	Q11B4	;
+         radiation_cycle_crf_q11	        =	Q11C4	;
+         cycle_other_crf_q11	            =	Q11D4	;
+         reur_other_crf_q11	              =	Q11A5	;
+         immuno_cycle_crf_q11	    =	Q11B5	;
+         radiation_cycle_crf_q11	        =	Q11C5	;
+         cycle_other__crf_q11	            =	Q11D5	;
+         chemo_discontinue_crf_q11	=	Q11A10	;
+         immuno_discon_crf_q11	=	Q11B10	;
+         radiation_discontinue_crf_q11	    =	Q11C10	;
+         discontinue_other_crf_q11	        =	Q11D10	;        
+run;
+
+proc contents data=&outdata;
+run;
+
+proc print data=&outdata (obs=10);
+	var Age_CRF_q1 Q1_r1_c1 ;
+run; 
+  endsas; 
+
+  
+  
+      
+   
+
+   %let PROGNAME = create_analytic_file;
+
+proc printto log = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..log" new;    
+run;
+
+/*--------------------------------------------------------------------------------------------*
+*- EMD29696: MCC Chart review study     			         -*
+*---------------------------------------------------------------------------------------------*
+*- Purpose:Create analytic file-*
+*---------------------------------------------------------------------------------------------*  
+*-Input dataset : projdata.mcc_crf_drvd -*
+*---------------------------------------------------------------------------------------------*
+*- Date:    May 10, 2021                                                                     -*
+*- Title:   create_analytic_file.sas                                                      -*
+*- Author:  Hongye Wei                                                                      -*
+*---------------------------------------------------------------------------------------------*
+*- Modified:                                                                                 -*
+*---------------------------------------------------------------------------------------------*
+/* Pull in project-wide parameters */
+/* %include "../common.sas";*/ 
+
+options nocenter mprint linesize=max pagesize=max; 
+
+title1 'QA/QC Listings';
+
+proc printto print = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..lst" new;    
+run;
+
+libname rawdata '/datalibrary/dua-data/EMD29696';
+libname projdata '/projects/dua-data-projects/EMD29696/global.nonperson/data';
+
+%let INDATA1 = projdata.mcc_crf_drvd;
+%let OUTDATA = projdata.analytic_file;
+
+
+    
+data &outdata;
+set &indata1;
+
+attrib day_to_death length=3 label=" "
+       cohort       length=3 label="cohort=1:day_to_death >90; cohort=2:day_to_death <91   "
+       Q14b_r_c    length=3 label="Q14b_r*_c*=1 or 0   "
+      ;
+/* */
+    day_to_death=(Q26_r1_c5-Q16a01_r1_c3)*365+ (Q26_r1_c4-Q16a01_r1_c1)*30 +(Q26_r1_c3-Q16a01_r1_c2);
+    
+    if day_to_death=. then cohort=1;
+    if day_to_death >90 then cohort=1;
+    if day_to_death <91 then cohort=2; 
+    
+    if  Q5b=2 then  Q5=Q5/ 0.393701;
+    if  Q6b=2 then  Q6=Q6/ 2.20462; 
+     
+     Q14b_r_c=Q14b_r1_c3+Q14b_r2_c3+Q14b_r3_c3+Q14b_r4_c3+Q14b_r5_c3;
+     if Q14b_r_c > 0 then Q14b_r_c=1;
+     if Q14b_r_c < 1.then Q14b_r_c=0;
+run;
+
+proc freq data=&outdata;
+  table day_to_death;
+  run;
+ endsas;
+ 
+     
+           
+option nolabel;
+proc means data=&outdata N Nmiss MIN MAX MEAN MEDIAN maxdec=2;
+	var  _numeric_;
+run;  
+
+%let PROGNAME = report_demographics_table1;
+
+proc printto log = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..log" new;    
+run;
+
+/*--------------------------------------------------------------------------------------------*
+*- EMD29696: MCC Chart review study     			         -*
+*---------------------------------------------------------------------------------------------*
+*- Purpose: report_demographics_table1-*
+*---------------------------------------------------------------------------------------------*  
+*-Input dataset : projdata.mcc_crf_drvd -*
+*---------------------------------------------------------------------------------------------*
+*- Date:    May 10, 2021                                                                     -*
+*- Title:   report_demographics_table1.sas                                                      -*
+*- Author:  Hongye Wei                                                                      -*
+*---------------------------------------------------------------------------------------------*
+*- Modified:                                                                                 -*
+*---------------------------------------------------------------------------------------------*
+/* Pull in project-wide parameters */
+/* %include "../common.sas";*/ 
+
+options nocenter mprint linesize=max pagesize=max; 
+
+title1 'QA/QC Listings';
+
+proc printto print = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..lst" new;    
+run;
+
+libname rawdata '/datalibrary/dua-data/EMD29696';
+libname projdata '/projects/dua-data-projects/EMD29696/global.nonperson/data';
+
+%let INDATA1 = projdata.mcc_crf_drvd;
+%let OUTDATA = projdata.analytic_file;
+%let OUTDATA1 = projdata.report_demographics_table1;
+
+/* Q3_6_other is all missing  
+Q13c_7_other only #71 =8 
+Q13d_7_other #33=7 #71=8
+Q16e2_r1_c7 all missing
+Q16f2_r1_c5 all missing
+Q16f4_r1_c7 all missing*/
+
+ proc print data=&outdata;
+ var Q3_6_other Q13c_7_other Q13d_7_other Q16e2_r1_c7  Q16f2_r1_c5 Q16f4_r1_c7 Q16f5_r1_c1;
+ run;
+ 
+ 
+ 
+ /* continuous variable*/
+
+ %MACRO printmean(name= );
+ proc sort data=&outdata out=temp1;
+    by cohort;
+    run;
+    proc means data= temp1; 
+      by   cohort;
+	    var &name;
+	    output out = &name 
+           n = n
+           mean = mean
+           std = std;
+    run;
+    proc print data= &name ;
+    run;
+ %MEND printmean;  
+ 
+  %printmean(name= Age_CRF_q1);   
+  %printmean(name= Height_CRF_q5);
+  %printmean(name= Weight_CRF_q6); 
+  %printmean(name= Q5);  
+  %printmean(name= Q6); 
+  %printmean(name= Q14b_r1_c3);
+ %printmean(name= Q14b_r2_c3);
+ %printmean(name= Q14b_r3_c3);
+ %printmean(name= Q14b_r4_c3);
+ %printmean(name= Q14b_r5_c3);
+ %printmean(name= Q16g1_r1_c1);
+ %printmean(name= Q16g2_r1_c1);
+ %printmean(name= Q16k2_r1_c2);
+ %printmean(name= Q16k2_r1_c3);
+ %printmean(name= Q16k2_r1_c4);
+            
+ 
+%MACRO printfreq (name= );
+Title2 "rpt_&name";
+    proc sort data=&outdata out=temp;
+    by cohort;
+    run;
+    proc freq data= temp noprint;
+      tables cohort* &name / out= rpt_&name  ;
+    run;
+  proc print data= rpt_&name;
+    run; 
+ %MEND printfreq; 
+ 
+  /* proc transpose data=rpt_&name out=rpt_&name_1 prefix=a;
+    by cohort ;
+    id &name;
+    var count;
+run;*/
+
+ %printfreq(name= Sex_CRF_q2); 
+ %printfreq(name= Race_CRF_q3); 
+ %printfreq(name= Ethnicity_CRF_q4);
+ %printfreq(name= Q9b_r1_c1);  
+ %printfreq(name= Q9b_r2_c1);  
+ %printfreq(name= Q9b_r3_c1);
+ %printfreq(name= Q9b_r4_c1);
+ %printfreq(name= Q9b_r5_c1);
+ %printfreq(name= Q9b_r6_c1);
+ %printfreq(name= Q9b_r7_c1);
+ %printfreq(name= Q9b_r8_c1);
+ %printfreq(name= Q9b_r9_c1);
+ %printfreq(name= Q9b_r10_c1);
+ %printfreq(name= Q9b_r11_c1);
+ %printfreq(name= Q9b_r12_c1);
+ %printfreq(name= Q9b_r13_c1);
+ %printfreq(name= Q9b_r14_c1); 
+ %printfreq(name= Q9b_r15_c1); 
+ %printfreq(name= Q9b_r16_c1); 
+ %printfreq(name= Q9b_r17_c1);
+ %printfreq(name= Q9b_r18_c1);
+ %printfreq(name= Q9b_r19_c1);
+ %printfreq(name= Q9b_r20_c1);
+ %printfreq(name= Q9b_r21_c1);
+ %printfreq(name= Q13b2); 
+ %printfreq(name= Q13c_1); 
+ %printfreq(name= Q13c_2);
+ %printfreq(name= Q13c_3);
+ %printfreq(name= Q13c_4);
+ %printfreq(name= Q13c_5);
+ %printfreq(name= Q13c_6);
+ %printfreq(name= Q13c_7);
+ %printfreq(name= Q13e);
+ %printfreq(name= Q13d_1);
+ %printfreq(name= Q13d_2);
+ %printfreq(name= Q13d_3);
+ %printfreq(name= Q13d_4);
+ %printfreq(name= Q13d_5);
+ %printfreq(name= Q13d_6);
+ %printfreq(name= Q13d_7);
+ %printfreq(name= Q13f1);
+ %printfreq(name= Q13g3);
+ %printfreq(name= Q13h3);
+ %printfreq(name= Q13i3);
+ %printfreq(name= Q14);
+ %printfreq(name= Q16e2_r1_c3);
+ %printfreq(name= Q16e2_r1_c4);
+ %printfreq(name= Q16e2_r1_c5);
+ %printfreq(name= Q16e2_r1_c6);
+ %printfreq(name= Q16e3_r1_c1 );
+ %printfreq(name= Q16f1_r1_c1);
+%printfreq(name=  Q16e3_r1_c2);
+%printfreq(name=  Q16f1_r1_c2);
+%printfreq(name= Q16f2_r1_c2);
+%printfreq(name= Q16f2_r1_c3);
+%printfreq(name= Q16f2_r1_c4);
+%printfreq(name= Q16f4_r1_c1);
+%printfreq(name= Q16f4_r1_c2);
+%printfreq(name= Q16f4_r1_c3);
+%printfreq(name= Q16f4_r1_c4);
+%printfreq(name= Q16f4_r1_c5);
+%printfreq(name= Q16f4_r1_c6);
+%printfreq(name= Q16f5_r1_c1);
+%printfreq(name= Q16f5_r1_c2);
+%printfreq(name= Q16g1_r1_c1);
+%printfreq(name= Q16g2_r1_c1);
+%printfreq(name= Q16k1);
+
+ 
+
+%let PROGNAME = report_demographics_table2;
+
+proc printto log = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..log" new;    
+run;
+
+/*--------------------------------------------------------------------------------------------*
+*- EMD29696: MCC Chart review study     			         -*
+*---------------------------------------------------------------------------------------------*
+*- Purpose: report_demographics_table2-*
+*---------------------------------------------------------------------------------------------*  
+*-Input dataset : projdata.mcc_crf_drvd -*
+*---------------------------------------------------------------------------------------------*
+*- Date:    May 10, 2021                                                                     -*
+*- Title:   report_demographics_table1.sas                                                      -*
+*- Author:  Hongye Wei                                                                      -*
+*---------------------------------------------------------------------------------------------*
+*- Modified:                                                                                 -*
+*---------------------------------------------------------------------------------------------*
+/* Pull in project-wide parameters */
+/* %include "../common.sas";*/ 
+
+options nocenter mprint linesize=max pagesize=max; 
+
+title1 'QA/QC Listings';
+
+proc printto print = "/projects/dua-data-projects/EMD29696/global.nonperson/qc/&PROGNAME..lst" new;    
+run;
+
+libname rawdata '/datalibrary/dua-data/EMD29696';
+libname projdata '/projects/dua-data-projects/EMD29696/global.nonperson/data';
+
+%let INDATA1 = projdata.mcc_crf_drvd;
+%let OUTDATA = projdata.analytic_file;
+%let OUTDATA1 = projdata.report_demographics_table1;
+
+/*Q10c_7_other is missing all 
+ Q12A1_4_other is missing all*/
+
+ proc print data=&outdata;
+ var Q10a_r1_c1 Q16a01_r1_c2 Q16a01_r2_c2 Q10c_7_other Q12A1_4_other Q11A1_4_other; 
+ run;
+ 
+   
+%MACRO printfreq (name= );
+Title2 "rpt_&name";
+    proc sort data=&outdata out=temp;
+    by cohort;
+    run;
+    proc freq data= temp noprint;
+      tables cohort* &name / out= rpt_&name  ;
+    run;
+  proc print data= rpt_&name;
+    run; 
+ %MEND printfreq; 
+ 
+  /* proc transpose data=rpt_&name out=rpt_&name_1 prefix=a;
+    by cohort ;
+    id &name;
+    var count;
+run;*/
+
+ %printfreq(name= Q10); 
+%printfreq(name= Q10c_1); 
+%printfreq(name= Q10c_2); 
+%printfreq(name= Q10c_3); 
+%printfreq(name= Q10c_4); 
+%printfreq(name= Q10c_5); 
+%printfreq(name= Q10c_6); 
+%printfreq(name= Q10c_7); 
+%printfreq(name= Q14); 
+%printfreq(name= Q14b_r1_c3); 
+%printfreq(name= Q14b_r2_c3); 
+%printfreq(name= Q14b_r3_c3); 
+%printfreq(name= Q14b_r4_c3); 
+%printfreq(name= Q14b_r5_c3); 
+/*%printfreq(name= Q14b_r_c);*/
+%printfreq(name= Q12);
+%printfreq(name= Q12A1_1);
+%printfreq(name= Q12A1_2);
+%printfreq(name= Q12A1_3);
+%printfreq(name= Q12A1_4);
+%printfreq(name= Q12A6);
+%printfreq(name= Q12B6);
+%printfreq(name= Q12A8);
+%printfreq(name= Q12B8);
+%printfreq(name= Q12C8);
+%printfreq(name= Q12D8);
+%printfreq(name= Q12A4);
+%printfreq(name= Q12B4);
+%printfreq(name= Q12C4);
+%printfreq(name= Q12D4);
+%printfreq(name= Q12A5);
+%printfreq(name= Q12B5);
+%printfreq(name= Q12C5);
+%printfreq(name= Q12D5);
+%printfreq(name= Q12A10);
+%printfreq(name= Q12B10);
+%printfreq(name= Q12C10);
+%printfreq(name= Q12D10);
+%printfreq(name= Q11);
+%printfreq(name= Q11A6);
+%printfreq(name= Q11B6);
+%printfreq(name= Q11A8);
+%printfreq(name= Q11B8);
+%printfreq(name= Q11C8);
+%printfreq(name= Q11D8);
+%printfreq(name= Q11A4);
+%printfreq(name= Q11B4);
+%printfreq(name= Q11C4);
+%printfreq(name= Q11D4);
+%printfreq(name= Q11A5);
+%printfreq(name= Q11B5);
+%printfreq(name= Q11C5);
+%printfreq(name= Q11D5);
+%printfreq(name= Q11A10);
+%printfreq(name= Q11B10);
+%printfreq(name= Q11C10);
+%printfreq(name= Q11D10);
+
+
+
